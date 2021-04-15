@@ -1,28 +1,24 @@
-import datetime
+import time, json
 from openpyxl import Workbook
 
 wb = Workbook()
 ws1 = wb.worksheets[0]
+output = []
 
 
-def get_week_number():
-    week_number = datetime.date.today().isocalendar()[1]
-    return week_number
+class TimeSlot:
+    def __init__(self, user):
+        self.user = user
 
+    def add_time_slot(self, start, end):
+        time_slot = str(start) + "-" + str(end)
+        self.write_json(time_slot)
 
-def get_days(week_number):
-    r = datetime.datetime.strptime("2021-W{}".format(week_number) + "-2", "%Y-W%W-%w")
-    days = [
-        "Lundi",
-        "Mardi",
-        "Mercredi",
-        "Jeudi",
-        "Vendredi",
-        "Samedi",
-        "Dimanche",
-    ]
-    print(r)
-    return days
+    def write_json(self, time_slot):
+        data = {"user": self.user, "duration": time_slot}
+        output.append(data)
+        with open("./data/timetable.json", "a") as json_file:
+            json.dump(output, json_file)
 
 
 def write_in_cell(cell, value):
@@ -38,7 +34,9 @@ def write_in_line(data):
 
 
 def main():
-    write_in_line(get_days(get_week_number()))
+    h1 = TimeSlot("Nicolas Demol")
+    h1.add_time_slot(10, 11)
+    h1.add_time_slot(11, 12)
     wb.save("./data/planning.xlsx")
 
 
