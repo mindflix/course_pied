@@ -3,22 +3,21 @@ from openpyxl import Workbook
 
 wb = Workbook()
 ws1 = wb.worksheets[0]
-output = []
 
 
-class TimeSlot:
+class User:
     def __init__(self, user):
         self.user = user
+        self.output = []
 
     def add_time_slot(self, start, end):
         time_slot = str(start) + "-" + str(end)
-        self.write_json(time_slot)
-
-    def write_json(self, time_slot):
         data = {"user": self.user, "duration": time_slot}
-        output.append(data)
-        with open("./data/timetable.json", "a") as json_file:
-            json.dump(output, json_file)
+        self.output.append(data)
+
+    def write_json(self):
+        with open("./data/timetable.json", "w") as json_file:
+            json.dump(self.output, json_file)
 
 
 def write_in_cell(cell, value):
@@ -34,9 +33,10 @@ def write_in_line(data):
 
 
 def main():
-    h1 = TimeSlot("Nicolas Demol")
+    h1 = User("Nicolas Demol")
     h1.add_time_slot(10, 11)
     h1.add_time_slot(11, 12)
+    h1.write_json()
     wb.save("./data/planning.xlsx")
 
 
