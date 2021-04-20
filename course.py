@@ -3,21 +3,43 @@ from openpyxl import Workbook
 
 wb = Workbook()
 ws1 = wb.worksheets[0]
+output = {"data": []}
 
 
 class User:
     def __init__(self, user):
         self.user = user
-        self.output = []
 
     def add_time_slot(self, start, end):
-        time_slot = str(start) + "-" + str(end)
-        data = {"user": self.user, "duration": time_slot}
-        self.output.append(data)
+        time_dict = {}
+        if self.get_last_id() == None:
+            time_dict["id"] = 1
+        else:
+            time_dict["id"] = self.get_last_id() + 1
+        time_dict["user"] = self.user
+        time_dict["duration"] = [start, end]
+        output["data"].append(time_dict)
+
+    def get_last_id(self):
+        with open("./data/timetable.json", "r+") as file:
+            json_string = json.load(file)
+            json_data = json_string["data"]
+            try:
+                last_id = json_data[-1]["id"]
+                return last_id
+            except (IndexError, KeyError):
+                return None
 
     def write_json(self):
-        with open("./data/timetable.json", "w") as json_file:
-            json.dump(self.output, json_file)
+        with open("./data/timetable.json", "r+") as file:
+            json_string = json.load(file)
+            if type(json_string) == dict:
+                for i in output["data"]:
+                    json_string["data"].append(i)
+                file.seek(0)
+                json.dump(json_string, file, indent=4)
+            else:
+                json.dump(output, file, indent=4)
 
 
 def write_in_cell(cell, value):
@@ -35,9 +57,7 @@ def write_in_line(data):
 def main():
     h1 = User("Nicolas Demol")
     h1.add_time_slot(10, 11)
-    h1.add_time_slot(11, 12)
     h1.write_json()
-    wb.save("./data/planning.xlsx")
 
 
 if __name__ == "__main__":

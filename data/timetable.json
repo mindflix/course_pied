@@ -1,1 +1,28 @@
-[{"user": "Nicolas Demol", "duration": "10-11"}, {"user": "Nicolas Demol", "duration": "11-12"}]
+{
+    "data": [
+        {
+            "id": 1,
+            "user": "Nicolas Demol",
+            "duration": [
+                10,
+                11
+            ]
+        },
+        {
+            "id": 2,
+            "user": "Nicolas Demol",
+            "duration": [
+                10,
+                11
+            ]
+        },
+        {
+            "id": 3,
+            "user": "Nicolas Demol",
+            "duration": [
+                10,
+                11
+            ]
+        }
+    ]
+}
